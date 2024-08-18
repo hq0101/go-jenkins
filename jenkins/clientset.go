@@ -3,25 +3,32 @@ package jenkins
 import (
 	jobv1 "github.com/hq0101/go-jenkins/jenkins/typed/job/v1"
 	nodev1 "github.com/hq0101/go-jenkins/jenkins/typed/node/v1"
+	viewv1 "github.com/hq0101/go-jenkins/jenkins/typed/view/v1"
 	"github.com/hq0101/go-jenkins/rest"
 )
 
 type Interface interface {
 	NodesV1() nodev1.NodeV1Interface
 	JobsV1() jobv1.JobV1Client
+	ViewV1() viewv1.ViewV1Client
 }
 
 type Clientset struct {
 	nodeV1 *nodev1.NodeV1Client
 	jobV1  *jobv1.JobV1Client
+	viewV1 *viewv1.ViewV1Client
 }
 
 func (c *Clientset) NodeV1() nodev1.NodeV1Interface {
 	return c.nodeV1
 }
 
-func (c *Clientset) Jobs() jobv1.JobV1Interface {
+func (c *Clientset) JobV1() jobv1.JobV1Interface {
 	return c.jobV1
+}
+
+func (c *Clientset) ViewV1() viewv1.ViewV1Interface {
+	return c.viewV1
 }
 
 func NewForConfig(c *rest.Config) (*Clientset, error) {
@@ -35,6 +42,11 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 		return nil, err
 	}
 	client.jobV1, err = jobv1.NewForConfig(&config)
+	if err != nil {
+		return nil, err
+	}
+
+	client.viewV1, err = viewv1.NewForConfig(&config)
 	if err != nil {
 		return nil, err
 	}
@@ -57,5 +69,6 @@ func New(c rest.Interface) *Clientset {
 	var client Clientset
 	client.nodeV1 = nodev1.New(c)
 	client.jobV1 = jobv1.New(c)
+	client.viewV1 = viewv1.New(c)
 	return &client
 }

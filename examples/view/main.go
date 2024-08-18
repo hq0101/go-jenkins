@@ -19,6 +19,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	node, err := clientset.NodeV1().Nodes().GetNodes(context.Background())
-	fmt.Println(node.DisplayName)
+
+	itemCategories, err := clientset.ViewV1().View().GetCategories(context.Background(), "all", 3)
+	fmt.Println(itemCategories)
 }
