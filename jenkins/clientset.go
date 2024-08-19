@@ -3,6 +3,7 @@ package jenkins
 import (
 	jobv1 "github.com/hq0101/go-jenkins/jenkins/typed/job/v1"
 	nodev1 "github.com/hq0101/go-jenkins/jenkins/typed/node/v1"
+	pipelineModev1 "github.com/hq0101/go-jenkins/jenkins/typed/pipeline-model-definition/v1"
 	viewv1 "github.com/hq0101/go-jenkins/jenkins/typed/view/v1"
 	"github.com/hq0101/go-jenkins/rest"
 )
@@ -11,12 +12,14 @@ type Interface interface {
 	NodesV1() nodev1.NodeV1Interface
 	JobsV1() jobv1.JobV1Client
 	ViewV1() viewv1.ViewV1Client
+	PipelineModeV1() pipelineModev1.PipelineModeV1Client
 }
 
 type Clientset struct {
-	nodeV1 *nodev1.NodeV1Client
-	jobV1  *jobv1.JobV1Client
-	viewV1 *viewv1.ViewV1Client
+	nodeV1         *nodev1.NodeV1Client
+	jobV1          *jobv1.JobV1Client
+	viewV1         *viewv1.ViewV1Client
+	pipelineModeV1 *pipelineModev1.PipelineModeV1Client
 }
 
 func (c *Clientset) NodeV1() nodev1.NodeV1Interface {
@@ -29,6 +32,10 @@ func (c *Clientset) JobV1() jobv1.JobV1Interface {
 
 func (c *Clientset) ViewV1() viewv1.ViewV1Interface {
 	return c.viewV1
+}
+
+func (c *Clientset) PipelineModeV1() pipelineModev1.PipelineModeV1Interface {
+	return c.pipelineModeV1
 }
 
 func NewForConfig(c *rest.Config) (*Clientset, error) {
@@ -47,6 +54,11 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	}
 
 	client.viewV1, err = viewv1.NewForConfig(&config)
+	if err != nil {
+		return nil, err
+	}
+
+	client.pipelineModeV1, err = pipelineModev1.NewForConfig(&config)
 	if err != nil {
 		return nil, err
 	}
@@ -70,5 +82,6 @@ func New(c rest.Interface) *Clientset {
 	client.nodeV1 = nodev1.New(c)
 	client.jobV1 = jobv1.New(c)
 	client.viewV1 = viewv1.New(c)
+	client.pipelineModeV1 = pipelineModev1.New(c)
 	return &client
 }
