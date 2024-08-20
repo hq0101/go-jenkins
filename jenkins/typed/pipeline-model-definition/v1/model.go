@@ -13,12 +13,13 @@ type PipelineModeGetter interface {
 }
 
 type PipelineModeInterface interface {
+	Validate(ctx context.Context, jenkinsFile string) (string, error)
 	ValidateJenkinsFile(ctx context.Context, jenkinsFile string) (*v1.Result, error)
-	ValidateJson(ctx context.Context, jenkinsFile string) (*v1.Result, error)
+	ValidateJson(ctx context.Context, jenkinsFileJson string) (*v1.Result, error)
 	ToJson(ctx context.Context, jenkinsFile string) (*v1.Result, error)
-	ToJenkinsFile(ctx context.Context, jenkinsFile string) (*v1.Result, error)
+	ToJenkinsFile(ctx context.Context, jenkinsFileJson string) (*v1.Result, error)
 	StepsToJson(ctx context.Context, jenkinsFile string) (*v1.Result, error)
-	StepsToJenkinsFile(ctx context.Context, jenkinsFile string) (*v1.Result, error)
+	StepsToJenkinsFile(ctx context.Context, jenkinsFileJson string) (*v1.Result, error)
 }
 
 type pipelineMode struct {
@@ -29,6 +30,25 @@ func newPipelineMode(c *PipelineModeV1Client) *pipelineMode {
 	return &pipelineMode{
 		client: c.RESTClient(),
 	}
+}
+
+func (c *pipelineMode) Validate(ctx context.Context, jenkinsFile string) (string, error) {
+	var ret string
+	var statusCode int
+	err := c.client.
+		Post().
+		SetHeader("Content-Type", "application/x-www-form-urlencoded").
+		AbsPath("/pipeline-model-converter/validate").
+		Param("jenkinsfile", jenkinsFile).
+		Do(ctx).
+		StatusCode(&statusCode).Into(&ret)
+	if statusCode != http.StatusOK {
+		return "", fmt.Errorf("get crumb failed, status code: %d", statusCode)
+	}
+	if err != nil {
+		return "", err
+	}
+	return ret, nil
 }
 
 // ValidateJenkinsFile Validation of Jenkinsfile
@@ -53,14 +73,14 @@ func (c *pipelineMode) ValidateJenkinsFile(ctx context.Context, jenkinsFile stri
 }
 
 // ValidateJson Validation of JSON representation
-func (c *pipelineMode) ValidateJson(ctx context.Context, jenkinsFile string) (*v1.Result, error) {
+func (c *pipelineMode) ValidateJson(ctx context.Context, jenkinsFileJson string) (*v1.Result, error) {
 	ret := &v1.Result{}
 	var statusCode int
 	err := c.client.
 		Post().
 		SetHeader("Content-Type", "application/x-www-form-urlencoded").
 		AbsPath("/pipeline-model-converter/validateJson").
-		Param("jenkinsfile", jenkinsFile).
+		Param("json", jenkinsFileJson).
 		Do(ctx).
 		StatusCode(&statusCode).Into(ret)
 	if statusCode != http.StatusOK {
@@ -91,14 +111,14 @@ func (c *pipelineMode) ToJson(ctx context.Context, jenkinsFile string) (*v1.Resu
 	return ret, nil
 }
 
-func (c *pipelineMode) ToJenkinsFile(ctx context.Context, jenkinsFile string) (*v1.Result, error) {
+func (c *pipelineMode) ToJenkinsFile(ctx context.Context, jenkinsFileJson string) (*v1.Result, error) {
 	ret := &v1.Result{}
 	var statusCode int
 	err := c.client.
 		Post().
 		SetHeader("Content-Type", "application/x-www-form-urlencoded").
-		AbsPath("/pipeline-model-converter/toJson").
-		Param("json", jenkinsFile).
+		AbsPath("/pipeline-model-converter/toJenkinsfile").
+		Param("json", jenkinsFileJson).
 		Do(ctx).
 		StatusCode(&statusCode).Into(ret)
 	if statusCode != http.StatusOK {
@@ -129,14 +149,14 @@ func (c *pipelineMode) StepsToJson(ctx context.Context, jenkinsFile string) (*v1
 	return ret, nil
 }
 
-func (c *pipelineMode) StepsToJenkinsFile(ctx context.Context, jenkinsFile string) (*v1.Result, error) {
+func (c *pipelineMode) StepsToJenkinsFile(ctx context.Context, jenkinsFileJson string) (*v1.Result, error) {
 	ret := &v1.Result{}
 	var statusCode int
 	err := c.client.
 		Post().
 		SetHeader("Content-Type", "application/x-www-form-urlencoded").
 		AbsPath("/pipeline-model-converter/stepsToJenkinsfile").
-		Param("json", jenkinsFile).
+		Param("json", jenkinsFileJson).
 		Do(ctx).
 		StatusCode(&statusCode).Into(ret)
 	if statusCode != http.StatusOK {

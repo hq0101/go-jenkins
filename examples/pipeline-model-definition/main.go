@@ -21,5 +21,19 @@ func main() {
 	}
 
 	ret, err := clientset.PipelineModeV1().PipelineMode().ValidateJenkinsFile(context.Background(), "pipeline {\n    agent any\n\n    stages {\n        stage('Hello') {\n            steps {\n                echo 'Hello World'\n            }\n        }\n    }\n}")
-	fmt.Println(ret)
+	fmt.Println("ValidateJenkinsFile", ret)
+	ret, err = clientset.PipelineModeV1().PipelineMode().ToJson(context.Background(), "pipeline {\n    agent any\n\n    stages {\n        stage('Hello') {\n            steps {\n                echo 'Hello World'\n            }\n        }\n    }\n}")
+	fmt.Println("ToJson", ret)
+
+	ret, err = clientset.PipelineModeV1().PipelineMode().StepsToJson(context.Background(), "pipeline {\n    agent any\n\n    stages {\n        stage('Hello') {\n            steps {\n                echo 'Hello World'\n            }\n        }\n    }\n}")
+	fmt.Println("StepsToJson", ret)
+	r, err := clientset.PipelineModeV1().PipelineMode().Validate(context.Background(), "pipeline {\n    agent any\n\n    stages {\n        stage('Hello') {\n            steps {\n                echo 'Hello World'\n            }\n        }\n    }\n}")
+	fmt.Println("Validate", r)
+
+	ret, err = clientset.PipelineModeV1().PipelineMode().ValidateJson(context.Background(), "{\n  \"pipeline\":{\n    \"stages\":[\n      {\n        \"name\":\"Hello\",\n        \"branches\":[\n          {\n            \"name\":\"default\",\n            \"steps\":[\n              {\n                \"name\":\"echo\",\n                \"arguments\":[\n                  {\n                    \"key\":\"message\",\n                    \"value\":{\n                      \"isLiteral\":true,\n                      \"value\":\"Hello World\"\n                    }\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ],\n    \"agent\":{\n      \"type\":\"any\"\n    }\n  }\n}")
+	fmt.Println("ValidateJson", ret)
+	ret, err = clientset.PipelineModeV1().PipelineMode().StepsToJenkinsFile(context.Background(), "{\n  \"name\":\"steps\",\n  \"arguments\":[ ],\n  \"children\":[\n    {\n      \"name\":\"echo\",\n      \"arguments\":[\n        {\n          \"key\":\"message\",\n          \"value\":{\n            \"isLiteral\":true,\n            \"value\":\"Hello World\"\n          }\n        }\n      ]\n    }\n  ]\n}")
+	fmt.Println("StepsToJenkinsFile", ret)
+	ret, err = clientset.PipelineModeV1().PipelineMode().ToJenkinsFile(context.Background(), "{\n  \"pipeline\":{\n    \"stages\":[\n      {\n        \"name\":\"Hello\",\n        \"branches\":[\n          {\n            \"name\":\"default\",\n            \"steps\":[\n              {\n                \"name\":\"echo\",\n                \"arguments\":[\n                  {\n                    \"key\":\"message\",\n                    \"value\":{\n                      \"isLiteral\":true,\n                      \"value\":\"Hello World\"\n                    }\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ],\n    \"agent\":{\n      \"type\":\"any\"\n    }\n  }\n}")
+	fmt.Println("ToJenkinsFile", ret)
 }

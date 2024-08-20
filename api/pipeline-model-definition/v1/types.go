@@ -18,7 +18,7 @@ type Result struct {
 		Errors []struct {
 			Error string `json:"error"`
 		} `json:"errors"`
-		Json        map[string]interface{} `json:"json"`
-		Jenkinsfile string                 `json:"jenkinsfile"`
+		Json        interface{} `json:"json"`
+		Jenkinsfile string      `json:"jenkinsfile"`
 	} `json:"data"`
 }
