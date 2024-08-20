@@ -272,6 +272,11 @@ func (r Result) Into(v interface{}) error {
 		return r.Error()
 	}
 
+	if obj, ok := v.(*string); ok {
+		*obj = string(r.body)
+		return nil
+	}
+
 	if err := json.Unmarshal(r.body, v); err != nil {
 		return err
 	}
