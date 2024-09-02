@@ -1,5 +1,9 @@
 package v1
 
+const (
+	ModeMyView string = "hudson.model.MyView"
+)
+
 type Categories struct {
 	Class      string `json:"_class" xml:"_class,attr"`
 	Categories []struct {

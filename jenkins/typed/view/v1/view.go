@@ -38,10 +38,88 @@ func (c *view) GetCategories(ctx context.Context, name string, depth int) (*v1.C
 		Do(ctx).
 		StatusCode(&statusCode).Into(categories)
 	if statusCode != http.StatusOK {
-		return nil, fmt.Errorf("get crumb failed, status code: %d", statusCode)
+		return nil, fmt.Errorf("status code: %d", statusCode)
 	}
 	if err != nil {
 		return nil, err
 	}
 	return categories, nil
+}
+
+func (c *view) CheckIncludeRegex(ctx context.Context, name string) error {
+	url := fmt.Sprintf("/view/%s/descriptorByName/hudson.model.ListView/checkIncludeRegex", name)
+	var statusCode int
+
+	err := c.client.
+		Post().
+		AbsPath(url).
+		SetHeader("Content-Type", "application/x-www-form-urlencoded").
+		Do(ctx).
+		StatusCode(&statusCode).Error()
+
+	if statusCode != http.StatusOK {
+		return fmt.Errorf("status code: %d", statusCode)
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CreateJobToView 列表试图
+func (c *view) CreateJobToView(ctx context.Context, viewName, jobName, crumb string) error {
+	url := fmt.Sprintf("/view/%s/addJobToView", viewName)
+	var statusCode int
+
+	err := c.client.
+		Post().
+		AbsPath(url).
+		SetHeader("Content-Type", "application/x-www-form-urlencoded").
+		Body(map[string]string{
+			"name":          jobName,
+			"Submit":        "",
+			"Jenkins-Crumb": crumb,
+			"json":          `{"name":"` + jobName + `","submit":"` + "" + `","Jenkins-Crumb":"` + crumb + `"}`,
+		}).
+		Do(ctx).
+		StatusCode(&statusCode).Error()
+
+	if statusCode != http.StatusOK {
+		return fmt.Errorf("status code: %d", statusCode)
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CreateView 我的视图
+func (c *view) CreateView(ctx context.Context, name, submit, crumb string) error {
+	url := "/createView"
+	var statusCode int
+
+	err := c.client.
+		Post().
+		AbsPath(url).
+		SetHeader("Content-Type", "application/x-www-form-urlencoded").
+		Body(map[string]string{
+			"name":          name,
+			"mode":          v1.ModeMyView,
+			"Submit":        submit,
+			"Jenkins-Crumb": crumb,
+			"json":          `{"name":"` + name + `","mode":"` + v1.ModeMyView + `","submit":"` + "" + `","Jenkins-Crumb":"` + crumb + `"}`,
+		}).
+		Do(ctx).
+		StatusCode(&statusCode).Error()
+
+	if statusCode != http.StatusOK {
+		return fmt.Errorf("status code: %d", statusCode)
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
