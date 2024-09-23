@@ -53,9 +53,15 @@ func main() {
 	//	fmt.Println(run.Name)
 	//}
 
-	pipelinerun, err := clientset.JobV1().Jobs().DescribeJobRun(context.Background(), "pipeline-01", 1)
+	//pipelinerun, err := clientset.JobV1().Jobs().DescribeJobRun(context.Background(), "pipeline-01", 1)
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	//fmt.Println(pipelinerun.Name)
+
+	output, err := clientset.JobV1().Jobs().GetConsoleText(context.Background(), "pipeline-01", 1)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(pipelinerun.Name)
+	fmt.Println(output)
 }
