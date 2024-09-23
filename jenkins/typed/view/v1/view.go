@@ -40,10 +40,8 @@ func (c *view) GetCategories(ctx context.Context, name string, depth int) (*v1.C
 	if statusCode != http.StatusOK {
 		return nil, fmt.Errorf("status code: %d", statusCode)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return categories, nil
+
+	return categories, err
 }
 
 func (c *view) CheckIncludeRegex(ctx context.Context, name string) error {
@@ -60,11 +58,8 @@ func (c *view) CheckIncludeRegex(ctx context.Context, name string) error {
 	if statusCode != http.StatusOK {
 		return fmt.Errorf("status code: %d", statusCode)
 	}
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
 
 // CreateJobToView 列表试图
@@ -88,11 +83,8 @@ func (c *view) CreateJobToView(ctx context.Context, viewName, jobName, crumb str
 	if statusCode != http.StatusOK {
 		return fmt.Errorf("status code: %d", statusCode)
 	}
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
 
 // CreateView 我的视图
@@ -117,9 +109,6 @@ func (c *view) CreateView(ctx context.Context, name, submit, crumb string) error
 	if statusCode != http.StatusOK {
 		return fmt.Errorf("status code: %d", statusCode)
 	}
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }

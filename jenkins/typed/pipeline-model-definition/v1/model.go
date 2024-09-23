@@ -45,10 +45,8 @@ func (c *pipelineMode) Validate(ctx context.Context, jenkinsFile string) (string
 	if statusCode != http.StatusOK {
 		return "", fmt.Errorf("get crumb failed, status code: %d", statusCode)
 	}
-	if err != nil {
-		return "", err
-	}
-	return ret, nil
+
+	return ret, err
 }
 
 // ValidateJenkinsFile Validation of Jenkinsfile
@@ -66,10 +64,8 @@ func (c *pipelineMode) ValidateJenkinsFile(ctx context.Context, jenkinsFile stri
 	if statusCode != http.StatusOK {
 		return nil, fmt.Errorf("get crumb failed, status code: %d", statusCode)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
+
+	return ret, err
 }
 
 // ValidateJson Validation of JSON representation
@@ -86,10 +82,8 @@ func (c *pipelineMode) ValidateJson(ctx context.Context, jenkinsFileJson string)
 	if statusCode != http.StatusOK {
 		return nil, fmt.Errorf("get crumb failed, status code: %d", statusCode)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
+
+	return ret, err
 }
 
 func (c *pipelineMode) ToJson(ctx context.Context, jenkinsFile string) (*v1.Result, error) {
@@ -105,10 +99,8 @@ func (c *pipelineMode) ToJson(ctx context.Context, jenkinsFile string) (*v1.Resu
 	if statusCode != http.StatusOK {
 		return nil, fmt.Errorf("get crumb failed, status code: %d", statusCode)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
+
+	return ret, err
 }
 
 func (c *pipelineMode) ToJenkinsFile(ctx context.Context, jenkinsFileJson string) (*v1.Result, error) {
@@ -124,10 +116,8 @@ func (c *pipelineMode) ToJenkinsFile(ctx context.Context, jenkinsFileJson string
 	if statusCode != http.StatusOK {
 		return nil, fmt.Errorf("get crumb failed, status code: %d", statusCode)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
+
+	return ret, err
 }
 
 func (c *pipelineMode) StepsToJson(ctx context.Context, jenkinsFile string) (*v1.Result, error) {
@@ -143,10 +133,8 @@ func (c *pipelineMode) StepsToJson(ctx context.Context, jenkinsFile string) (*v1
 	if statusCode != http.StatusOK {
 		return nil, fmt.Errorf("get crumb failed, status code: %d", statusCode)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
+
+	return ret, err
 }
 
 func (c *pipelineMode) StepsToJenkinsFile(ctx context.Context, jenkinsFileJson string) (*v1.Result, error) {
@@ -162,8 +150,6 @@ func (c *pipelineMode) StepsToJenkinsFile(ctx context.Context, jenkinsFileJson s
 	if statusCode != http.StatusOK {
 		return nil, fmt.Errorf("get crumb failed, status code: %d", statusCode)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
+
+	return ret, err
 }

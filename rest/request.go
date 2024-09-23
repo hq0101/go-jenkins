@@ -154,6 +154,8 @@ func (r *Request) Body(obj interface{}) *Request {
 		r.body = bytes.NewReader(t)
 	case string:
 		r.body = bytes.NewReader([]byte(t))
+	case url.Values:
+		r.body = bytes.NewBufferString(t.Encode())
 	default:
 		var buf bytes.Buffer
 		enc := json.NewEncoder(&buf)
